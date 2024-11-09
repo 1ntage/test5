@@ -8,17 +8,10 @@ use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    public function index()
+    public function index(Message $message)
     {
-
-        $messages = Message::orderBy('created_at')->get();
+        $messages = Message::orderBy('created_at', 'desc')->get();
         return view('messages', compact('messages'));
-    }
-
-    public function show($id){
-        $user = User::findoffail($id);
-        $messages = $user->messages()->all()->get();
-        return view('profile', compact('user', 'messages'));
     }
 
     public function store(Request $request, Message $message){
@@ -38,7 +31,24 @@ class MessageController extends Controller
 
     public function offensive(Message $message){
         $message->update(['status' => 'offensive']);
-
         return redirect()->back();
+    }
+
+    public function adminViewOffensive()
+    {
+        $offensiveMessages = Message::where(['status' => 'offensive'])->with('user')->get();
+        return view('admin.offensive_messages', compact('offensiveMessages'));
+    }
+
+    public function removeOffensiveFlag(Message $message)
+    {
+        $message->update(['status' => 'new']);
+        return redirect()->back()->with('success', 'Пометка оскорбительное снята');
+    }
+
+    public function destroy(Message $message)
+    {
+        $message->delete();
+        return redirect()->back()->with('success', 'Сообщение удалено');
     }
 }

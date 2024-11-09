@@ -26,7 +26,7 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password'])
         ]);
 
-        Auth::user();
+        Auth::login($user);
 
         return redirect('/')->with('success', 'Вы успешно зарегистрированы');
     }

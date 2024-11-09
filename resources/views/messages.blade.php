@@ -13,10 +13,11 @@
     @csrf
     <button type="submit">Выйти</button>
 </form>
+<p><a href="/admin">Страница админа</a></p>
 @foreach($messages as $message)
-    <a href="{{route('profile')}}">{{$message->nickname}}</a>
+    <a href="{{ route('users.show', $message->user_id) }}">{{ $message->nickname }}</a>
     <p>{{$message->text}} {{$message->created_at}} {{$message->status}}</p>
-    <form action="{{route('message_offensive')}}" method="POST">
+    <form action="{{route('message_offensive', $message)}}" method="POST">
         @csrf
         <button type="submit">Оскорбительное</button>
     </form>
@@ -35,6 +36,12 @@
 @if(session())
     <div class="alert alert-success">
         {{session('success')}}
+    </div>
+@endif
+
+@if(session())
+    <div class="alert alert-danger">
+        {{session('error')}}
     </div>
 @endif
 </body>
